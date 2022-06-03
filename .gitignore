@@ -6,3 +6,4 @@ config.json
 nginx/sites-available/*
 !nginx/sites-available/.gitkeep
 nginx/ssl
+php/Dockerfile
