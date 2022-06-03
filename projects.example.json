@@ -1,0 +1,17 @@
+[
+  {
+    "domain": "dev.yourleague.co.uk",
+    "web_root": "public",
+    "project_root": "/home/josh/programming/YourLeague"
+  },
+  {
+    "domain": "dev.yourquests.co.uk",
+    "web_root": "public",
+    "project_root": "/home/josh/programming/YourQuests"
+  },
+  {
+    "domain": "dev.yourstatus.co.uk",
+    "web_root": "public",
+    "project_root": "/home/josh/programming/YourStatus"
+  }
+]

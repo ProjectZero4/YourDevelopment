@@ -1,0 +1,8 @@
+.env
+*/database/data/*
+projects.json
+/docker-compose.yml
+.setup/yourDevelopment.*
+nginx/sites-available/*
+!nginx/sites-available/.gitkeep
+nginx/ssl

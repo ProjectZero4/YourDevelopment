@@ -1,0 +1,8 @@
+---
+version: '3'
+services:
+  yd.python:
+    build:
+      context: ./
+    volumes:
+      - "../:/home/dev-ops"

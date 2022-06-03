@@ -1,0 +1,48 @@
+server {
+    listen 443 ssl;
+    server_name {{ domain }};
+
+    access_log /var/log/nginx/{{ domain }}-access.log;
+    error_log /var/log/nginx/{{ domain }}-error.log;
+
+    ssl_certificate /etc/ssl/certs/{{ domain }}/{{ domain }}.crt;
+    ssl_certificate_key /etc/ssl/certs/{{ domain }}/{{ domain }}.pem;
+
+     root /home/nginx/{{ domain }}/{{ web_root }};
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Content-Type-Options "nosniff";
+
+    index index.php;
+
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
+
+    client_max_body_size 20M;
+    location ~ \.php$ {
+        fastcgi_pass yd.php:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+
+    return 301 https://$server_name$request_uri;
+}

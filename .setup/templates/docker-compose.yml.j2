@@ -1,0 +1,58 @@
+---
+version: '3'
+services:
+  yd.php:
+    networks:
+     - yd-network
+    build:
+      context: php
+      args:
+        DEBUG_HOST: "${DEBUG_HOST}"
+    container_name: yd.php
+    volumes:
+    {% for project in projects %}
+      - "{{ project["project_root"] }}:/home/nginx/{{ project["domain"] }}"
+    {% endfor %}
+  yd.nginx:
+    networks:
+      - yd-network
+    build:
+      context: nginx
+    ports:
+      - "443:443"
+      - "80:80"
+    container_name: yd.nginx
+    volumes:
+      - "./nginx/sites-available:/etc/nginx/conf.d"
+      - "./nginx/ssl/:/etc/ssl"
+    {% for project in projects %}
+      - "{{ project["project_root"] }}:/home/nginx/{{ project["domain"] }}"
+    {% endfor %}
+  yd.database:
+    networks:
+     - yd-network
+    build:
+      context: database
+    ports:
+      - "3306:3306"
+    container_name: yd.database
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+    volumes:
+      - yd-database:/var/lib/mysql
+  yd.redis:
+    networks:
+     - yd-network
+    build:
+      context: redis
+    ports:
+      - "6379:6379"
+    container_name: yd.redis
+volumes:
+  yd-database:
+    driver: local
+networks:
+  yd-network:

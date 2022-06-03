@@ -1,0 +1,30 @@
+FROM php:8.1-fpm
+ARG env="production"
+RUN apt-get update
+RUN apt-get install -y libcurl4-gnutls-dev libxml2-dev libldb-dev libldap2-dev cron libonig-dev libzip-dev
+RUN docker-php-ext-install curl
+RUN docker-php-ext-install pdo
+RUN docker-php-ext-install pdo_mysql
+RUN docker-php-ext-install xml
+RUN docker-php-ext-install mbstring
+RUN docker-php-ext-install pcntl
+RUN docker-php-ext-install zip
+RUN pecl install redis
+RUN docker-php-ext-enable curl pdo pdo_mysql xml mbstring zip pcntl redis
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+    curl -sL https://deb.nodesource.com/setup_14.x | bash - &&\
+    apt install nodejs -y
+RUN apt install zip unzip -y
+
+RUN apt-get install -y supervisor
+
+COPY horizon.conf /etc/supervisor/conf.d/horizon.conf
+COPY *.crt /etc/ssl/
+COPY *.pwd /etc/ssl/
+
+COPY php.ini /usr/local/etc/php/php.ini
+COPY www.conf /usr/local/etc/php-fpm.d/www.conf
+
+COPY custom-entrypoint.sh /custom-entrypoint.sh
+RUN chmod +x /custom-entrypoint.sh
+ENTRYPOINT ["/custom-entrypoint.sh"]
