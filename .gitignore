@@ -1,6 +1,6 @@
 .env
 */database/data/*
-projects.json
+config.json
 /docker-compose.yml
 .setup/yourDevelopment.*
 nginx/sites-available/*

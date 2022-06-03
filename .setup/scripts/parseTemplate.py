@@ -1,26 +1,22 @@
 from jinja2 import Template
 import json
 import os
-from OpenSSL import crypto, SSL
 from certificates import createCertificate
 
-projects = {}
+def parse_template(variables, output_filename, template_filename):
+    output_file = open(output_filename, "w")
+    output_file.write(Template(open(template_filename).read()).render(variables))
+    output_file.close()
+
 cwd = os.path.dirname(os.path.realpath(__file__)) + "/"
-projectsFile = open(cwd + "../../projects.json")
-projects = json.load(projectsFile)
-dockerComposeConfig = open(cwd + "../templates/docker-compose.yml.j2")
+configFile = open(cwd + "../../config.json")
+config = json.load(configFile)
+
+parse_template(config, cwd + "../../docker-compose.yml", cwd + "../templates/docker-compose.yml.j2")
+parse_template(config, cwd + "../../php/Dockerfile", cwd + "../templates/php.Dockerfile.j2")
+
+projects = config['projects']
 
 for project in projects:
-    outputFile = open(cwd + "../../nginx/sites-available/" + project["domain"] + ".conf", "w")
-    nginxConfig = open(cwd + "../templates/template.conf.j2")
-    template = Template(nginxConfig.read())
-    nginxConfig.close()
-    outputFile.write(template.render(project))
-    outputFile.close()
+    parse_template(project, cwd + "../../nginx/sites-available/" + project["domain"] + ".conf", cwd + "../templates/template.conf.j2")
     createCertificate(project['domain'])
-
-projectsArray = {"projects": projects}
-outputFile = open(cwd + "../../docker-compose.yml", "w")
-template = Template(dockerComposeConfig.read())
-outputFile.write(template.render(projectsArray))
-outputFile.close()

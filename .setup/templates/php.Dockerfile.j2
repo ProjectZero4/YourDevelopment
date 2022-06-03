@@ -1,5 +1,9 @@
 FROM php:8.1-fpm
-ARG env="production"
+
+ARG UNAME={{ files.user }}
+ARG UID={{ files.uid }}
+ARG GID={{ files.gid }}
+
 RUN apt-get update
 RUN apt-get install -y libcurl4-gnutls-dev libxml2-dev libldb-dev libldap2-dev cron libonig-dev libzip-dev
 RUN docker-php-ext-install curl
@@ -19,11 +23,15 @@ RUN apt install zip unzip -y
 RUN apt-get install -y supervisor
 
 COPY horizon.conf /etc/supervisor/conf.d/horizon.conf
-COPY *.crt /etc/ssl/
-COPY *.pwd /etc/ssl/
 
 COPY php.ini /usr/local/etc/php/php.ini
 COPY www.conf /usr/local/etc/php-fpm.d/www.conf
+
+
+RUN groupadd -g $GID -o $UNAME
+RUN useradd -m -u $UID -g $GID -g sudo -o -s /bin/bash $UNAME
+USER $UNAME
+
 
 COPY custom-entrypoint.sh /custom-entrypoint.sh
 RUN chmod +x /custom-entrypoint.sh
