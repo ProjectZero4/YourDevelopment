@@ -1,0 +1,8 @@
+{% for database in databases %}
+    while ! mysqladmin ping -h "yd.{{ database['container_name'] }}" --silent; do
+        sleep 1
+    done
+    {% for schema in database['schemas'] %}
+        mysql -h "yd.{{ database['container_name'] }}" -u root -p{{ database['root_password'] }} mysql < "/root/sql/{{ database['container_name'] }}/{{ schema['name'] }}.sql"
+    {% endfor %}
+{% endfor %}

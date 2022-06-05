@@ -1,0 +1,6 @@
+create database if not exists `{{ name }}`;
+{% if user is defined %}
+    create user if not exists '{{ user['name'] }}'@'%' IDENTIFIED BY '{{ user['password'] }}';
+    grant all privileges on `{{ name }}`.* to '{{ user['name'] }}'@'%';
+    flush privileges;
+{% endif %}

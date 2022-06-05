@@ -1,0 +1,15 @@
+FROM nginx:latest
+
+RUN apt update
+RUN apt install -y sudo
+
+
+ARG UNAME={{ files.user }}
+ARG UID={{ files.uid }}
+ARG GID={{ files.gid }}
+
+RUN groupadd -f -g $GID -o $UNAME && groupmod -g $GID $UNAME
+RUN (id -u $UNAME &>/dev/null && usermod -u $UID $UNAME) || useradd $UNAME -m -u $UID -g $GID -g sudo -o -s /bin/bash $UNAME
+RUN echo "$UNAME ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+RUN chown -R $UID:$UID /etc/ssl

@@ -1,5 +1,8 @@
+uid := $(shell id -u)
+gid := $(shell id -g)
 setup:
 	cd .setup && docker compose up
+	sudo chown $(uid):$(gid) -R .
 start:
 	docker compose up -d
 stop:

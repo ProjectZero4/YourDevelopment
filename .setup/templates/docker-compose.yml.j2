@@ -28,21 +28,36 @@ services:
     {% for project in projects %}
       - "{{ project["project_root"] }}:/home/nginx/{{ project["domain"] }}"
     {% endfor %}
-  yd.database:
+{% if databases is defined %}
+  yd.setup:
+    networks:
+     - yd-network
+    build:
+      context: database/setup
+    container_name: yd.setup
+    depends_on:
+    {% for database in databases %}
+      - "yd.{{ database['container_name'] }}"
+    {% endfor %}
+    volumes:
+      - "./database/sql:/root/sql"
+      - "./database/setup/entrypoint.sh:/entrypoint.sh"
+
+{% endif %}
+{% for database in databases %}
+  yd.{{ database['container_name'] }}:
     networks:
      - yd-network
     build:
       context: database
     ports:
-      - "3306:3306"
-    container_name: yd.database
+      - "{{ database['ports'] }}"
+    container_name: yd.{{ database['container_name'] }}
     environment:
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-      MYSQL_DATABASE: "${MYSQL_DATABASE}"
-      MYSQL_USER: "${MYSQL_USER}"
-      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "{{ database['root_password'] }}"
     volumes:
-      - yd-database:/var/lib/mysql
+      - yd-{{ database['container_name'] }}:/var/lib/mysql
+{% endfor %}
   yd.redis:
     networks:
      - yd-network
@@ -52,7 +67,8 @@ services:
       - "6379:6379"
     container_name: yd.redis
 volumes:
-  yd-database:
-    driver: local
+{% for database in databases %}
+  "yd-{{ database['container_name'] }}":
+{% endfor %}
 networks:
   yd-network:

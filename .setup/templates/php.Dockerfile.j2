@@ -33,7 +33,7 @@ RUN groupadd -f -g $GID -o $UNAME && groupmod -g $GID $UNAME
 RUN (id -u $UNAME &>/dev/null && usermod -u $UID $UNAME) || useradd $UNAME -m -u $UID -g $GID -g sudo -o -s /bin/bash $UNAME
 RUN echo "$UNAME ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-USER $UNAME
+USER $UID
 
 COPY custom-entrypoint.sh /custom-entrypoint.sh
 RUN sudo chmod +x /custom-entrypoint.sh

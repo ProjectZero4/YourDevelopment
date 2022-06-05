@@ -7,4 +7,7 @@ nginx/sites-available/*
 !nginx/sites-available/.gitkeep
 nginx/ssl
 php/Dockerfile
+nginx/Dockerfile
 .idea/
+database/sql
+database/setup/entrypoint.sh
