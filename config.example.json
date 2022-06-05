@@ -1,17 +1,61 @@
-[
-  {
-    "domain": "dev.yourleague.co.uk",
-    "web_root": "public",
-    "project_root": "/home/josh/programming/YourLeague"
+{
+  "files": {
+    "uid": 1000,
+    "gid": 1000,
+    "user": "www-data"
   },
-  {
-    "domain": "dev.yourquests.co.uk",
-    "web_root": "public",
-    "project_root": "/home/josh/programming/YourQuests"
-  },
-  {
-    "domain": "dev.yourstatus.co.uk",
-    "web_root": "public",
-    "project_root": "/home/josh/programming/YourStatus"
-  }
-]
+  "databases": [
+    {
+      "container_name": "database",
+      "root_password": "your_development",
+      "schemas": [
+        {
+          "name": "your_league",
+          "user": {
+            "name": "your_league",
+            "password": "your_league"
+          }
+        },
+        {
+          "name": "your_quests",
+          "user": {
+            "name": "your_quests",
+            "password": "your_quests"
+          }
+        }
+      ],
+      "ports": "3306:3306"
+    },
+    {
+      "root_password": "your_development",
+      "container_name": "database_1",
+      "schemas": [
+        {
+          "name": "your_status",
+          "user": {
+            "name": "your_status",
+            "password": "your_status"
+          }
+        }
+      ],
+      "ports": "3307:3306"
+    }
+  ],
+  "projects": [
+    {
+      "domain": "dev.yourleague.co.uk",
+      "web_root": "public",
+      "project_root": "/home/josh/programming/YourLeague"
+    },
+    {
+      "domain": "dev.yourquests.co.uk",
+      "web_root": "public",
+      "project_root": "/home/josh/programming/YourQuests"
+    },
+    {
+      "domain": "dev.yourstatus.co.uk",
+      "web_root": "public",
+      "project_root": "/home/josh/programming/YourStatus"
+    }
+  ]
+}
