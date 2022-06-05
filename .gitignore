@@ -4,12 +4,10 @@ config.json
 /docker-compose.yml
 .setup/yourDevelopment.*
 nginx/sites-available/*
-!nginx/sites-available/.gitkeep
 nginx/ssl
 php/Dockerfile
 nginx/Dockerfile
 .idea/
 database/sql
-database/setup/entrypoint.sh
 database/setup/entrypoint.sh
 .setup/scripts/__pycache__/
