@@ -11,3 +11,5 @@ nginx/Dockerfile
 .idea/
 database/sql
 database/setup/entrypoint.sh
+database/setup/entrypoint.sh
+.setup/scripts/__pycache__/
